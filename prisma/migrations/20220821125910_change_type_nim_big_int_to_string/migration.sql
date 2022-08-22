@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Mahasiswa" ALTER COLUMN "nim" SET DATA TYPE TEXT;

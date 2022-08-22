@@ -10,204 +10,188 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  nim_nip  BigInt @unique
-  password String
-  role     Role   @relation(fields: [role_id], references: [id])
-  role_id  String
-
-  mahasiswa  Mahasiswa?
-  dosen      Dosen?
-  Admin      Admin?
-  created_at DateTime   @default(now()) @db.Timestamptz()
-  updated_at DateTime   @updatedAt @db.Timestamptz()
-}
-
-model Role {
-  id         String   @id @default(uuid())
-  nama_role  NamaRole @default(MAHASISWA)
-  User       User[]
-  created_at DateTime @default(now()) @db.Timestamptz()
-  updated_at DateTime @updatedAt @db.Timestamptz()
-}
-
-enum NamaRole {
-  ADMIN
-  MAHASISWA
-  DOSEN
-}
-
 model Mahasiswa {
-  id                     String                   @id @default(uuid())
-  nama                   String
-  nim                    BigInt
-  ttl                    String
-  email                  String
-  alamat                 String?
-  no_hp                  String?
-  jurusan_id             String
-  jurusan                Jurusan                  @relation(fields: [jurusan_id], references: [id])
-  imei                   BigInt                   @unique
-  user                   User                     @relation(fields: [user_id], references: [id])
-  user_id                String                   @unique
-  AbsensiDaftarMahasiswa AbsensiDaftarMahasiswa[]
-  created_at             DateTime                 @default(now()) @db.Timestamptz()
-  updated_at             DateTime                 @updatedAt @db.Timestamptz()
+  id               String             @id @default(uuid())
+  email            String             @unique
+  nim              String             @unique
+  nama             String
+  ttl              DateTime           @default(now()) @db.Timestamptz()
+  password         String             @default("password")
+  alamat           String?
+  no_hp            String?
+  is_active        Boolean            @default(false)
+  angkatan_id      String
+  angkatan         Angkatan           @relation(fields: [angkatan_id], references: [id])
+  jurusan_id       String
+  jurusan          Jurusan            @relation(fields: [jurusan_id], references: [id])
+  imei             String             @unique
+  created_at       DateTime           @default(now()) @db.Timestamptz()
+  updated_at       DateTime           @updatedAt @db.Timestamptz()
+  AbsensiMahasiswa AbsensiMahasiswa[]
 }
 
-model Jurusan {
-  id           String      @id @default(uuid())
-  nama_jurusan String
-  created_at   DateTime    @default(now()) @db.Timestamptz()
-  updated_at   DateTime    @updatedAt @db.Timestamptz()
-  Mahasiswa    Mahasiswa[]
-}
-
-model Dosen {
-  id              String            @id @default(uuid())
-  nama            String
-  nip             BigInt            @unique
-  ttl             String
-  email           String            @unique
-  alamat          String?
-  no_hp           String?
-  user            User              @relation(fields: [user_id], references: [id])
-  user_id         String            @unique
-  DosenMatakuliah DosenMatakuliah[]
-  Absensi         Absensi[]
-  created_at      DateTime          @default(now()) @db.Timestamptz()
-  updated_at      DateTime          @updatedAt @db.Timestamptz()
+model Angkatan {
+  id         String      @id @default(uuid())
+  angkatan   Int         @unique
+  created_at DateTime    @default(now()) @db.Timestamptz()
+  updated_at DateTime    @updatedAt @db.Timestamptz()
+  Mahasiswa  Mahasiswa[]
 }
 
 model Admin {
   id         String   @id @default(uuid())
-  nama_admin String
   email      String   @unique
-  user       User     @relation(fields: [user_id], references: [id])
-  user_id    String   @unique
+  password   String   @default("password")
+  alamat     String?
+  no_hp      String?
+  is_active  Boolean  @default(true)
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @updatedAt @db.Timestamptz()
+}
+
+model Dosen {
+  id         String       @id @default(uuid())
+  email      String       @unique
+  password   String       @default("password")
+  alamat     String?
+  ttl        DateTime     @default(now()) @db.Timestamptz()
+  no_hp      String?
+  is_active  Boolean      @default(false)
+  created_at DateTime     @default(now()) @db.Timestamptz()
+  updated_at DateTime     @updatedAt @db.Timestamptz()
+  MataKuliah MataKuliah[]
+}
+
+model Jurusan {
+  id           String       @id @default(uuid())
+  nama_jurusan String       @unique
+  created_at   DateTime     @default(now()) @db.Timestamptz()
+  updated_at   DateTime     @updatedAt @db.Timestamptz()
+  Mahasiswa    Mahasiswa[]
+  MataKuliah   MataKuliah[]
+}
+
+model QrCodeWindow {
+  id           String   @id @default(uuid())
+  qr_code_text String
+  absensi_id   String   @unique
+  absensi      Absensi  @relation(fields: [absensi_id], references: [id])
+  created_at   DateTime @default(now()) @db.Timestamptz()
+  updated_at   DateTime @updatedAt @db.Timestamptz()
 }
 
 model Ruangan {
-  id                String              @id @default(uuid())
-  nama_ruangan      String
-  RuanganMataKuliah RuanganMataKuliah[]
-  created_at        DateTime            @default(now()) @db.Timestamptz()
-  updated_at        DateTime            @updatedAt @db.Timestamptz()
+  id           String        @id @default(uuid())
+  nama_ruangan String        @unique
+  created_at   DateTime      @default(now()) @db.Timestamptz()
+  updated_at   DateTime      @updatedAt @db.Timestamptz()
+  KelasJadwal  KelasJadwal[]
 }
 
-model MataKuliah {
-  id                 String               @id @default(uuid())
-  kode_matakuliah    String               @unique
-  nama_matakuliah    String
-  sks                Int
-  SemesterMataKuliah SemesterMataKuliah[]
-  DosenMatakuliah    DosenMatakuliah[]
-  RuanganMataKuliah  RuanganMataKuliah[]
-  Absensi            Absensi[]
-  created_at         DateTime             @default(now()) @db.Timestamptz()
-  updated_at         DateTime             @updatedAt @db.Timestamptz()
+model Kelas {
+  id          String        @id @default(uuid())
+  nama_kelas  String        @unique
+  created_at  DateTime      @default(now()) @db.Timestamptz()
+  updated_at  DateTime      @updatedAt @db.Timestamptz()
+  KelasJadwal KelasJadwal[]
 }
 
 model Semester {
-  id                 String               @id @default(uuid())
-  semester           String
-  SemesterMataKuliah SemesterMataKuliah[]
-  created_at         DateTime             @default(now()) @db.Timestamptz()
-  updated_at         DateTime             @updatedAt @db.Timestamptz()
+  id         String       @id @default(uuid())
+  semester   String       @unique
+  created_at DateTime     @default(now()) @db.Timestamptz()
+  updated_at DateTime     @updatedAt @db.Timestamptz()
+  MataKuliah MataKuliah[]
 }
 
-model SemesterMataKuliah {
-  semester_id   String
-  semester      Semester   @relation(fields: [semester_id], references: [id])
-  matakuliah_id String
-  matakuliah    MataKuliah @relation(fields: [matakuliah_id], references: [id])
-  created_at    DateTime   @default(now()) @db.Timestamptz()
-  updated_at    DateTime   @updatedAt @db.Timestamptz()
-
-  @@id([semester_id, matakuliah_id])
-}
-
-model DosenMatakuliah {
-  dosen_id      String
-  dosen         Dosen      @relation(fields: [dosen_id], references: [id])
-  matakuliah_id String
-  matakuliah    MataKuliah @relation(fields: [matakuliah_id], references: [id])
-  created_at    DateTime   @default(now()) @db.Timestamptz()
-  updated_at    DateTime   @updatedAt @db.Timestamptz()
-
-  @@id([dosen_id, matakuliah_id])
-}
-
-model RuanganMataKuliah {
-  ruangan_id    String
-  ruangan       Ruangan    @relation(fields: [ruangan_id], references: [id])
-  matakuliah_id String
-  matakuliah    MataKuliah @relation(fields: [matakuliah_id], references: [id])
-  created_at    DateTime   @default(now()) @db.Timestamptz()
-  updated_at    DateTime   @updatedAt @db.Timestamptz()
-
-  @@id([ruangan_id, matakuliah_id])
-}
-
-model Absensi {
-  id                     String                   @id @default(uuid())
-  matakuliah_id          String
-  matakuliah             MataKuliah               @relation(fields: [matakuliah_id], references: [id])
-  dosen_id               String
-  dosen                  Dosen                    @relation(fields: [dosen_id], references: [id])
-  jam_masuk              DateTime                 @db.Timestamptz()
-  batas_absensi          DateTime                 @db.Timestamptz()
-  qr_code                String
-  AbsensiDaftarMahasiswa AbsensiDaftarMahasiswa[]
-  status_absensi_id      String
-  statusAbsensi          StatusAbsensi            @relation(fields: [status_absensi_id], references: [id])
-  created_at             DateTime                 @default(now()) @db.Timestamptz()
-  updated_at             DateTime                 @updatedAt @db.Timestamptz()
-}
-
-model AbsensiDaftarMahasiswa {
-  id                  String          @id @default(uuid())
-  absensi_id          String
-  absensi             Absensi         @relation(fields: [absensi_id], references: [id])
-  mahasiswa_id        String
-  mahasiswa           Mahasiswa       @relation(fields: [mahasiswa_id], references: [id])
-  status_mahasiswa_id String
-  status_mahasiswa    StatusMahasiswa @relation(fields: [status_mahasiswa_id], references: [id])
-
-  created_at DateTime @default(now()) @db.Timestamptz()
-  updated_at DateTime @updatedAt @db.Timestamptz()
-}
-
-model StatusMahasiswa {
-  id                     String                   @id @default(uuid())
-  status                 namaStatusMahasiswa
-  AbsensiDaftarMahasiswa AbsensiDaftarMahasiswa[]
-
-  created_at DateTime @default(now()) @db.Timestamptz()
-  updated_at DateTime @updatedAt @db.Timestamptz()
-}
-
-enum namaStatusMahasiswa {
-  HADIR
-  HADIR_DILUAR_BATAS_WAKTU
-  IZIN
-  ALPHA
-}
-
-model StatusAbsensi {
-  id     String            @id @default(uuid())
-  status namaStatusAbsensi
+model MataKuliahKelasJadwal {
+  id              String      @id @default(uuid())
+  kelas_jadwal_id String
+  kelas_jadwal    KelasJadwal @relation(fields: [kelas_jadwal_id], references: [id])
+  matakuliah_id   String
+  matakuliah      MataKuliah  @relation(fields: [matakuliah_id], references: [id])
 
   created_at DateTime  @default(now()) @db.Timestamptz()
   updated_at DateTime  @updatedAt @db.Timestamptz()
   Absensi    Absensi[]
 }
 
-enum namaStatusAbsensi {
+model Jadwal {
+  id                    String        @id @default(uuid())
+  day_of_week           Int
+  start_time_in_seconds Int
+  end_time_in_seconds   Int
+  created_at            DateTime      @default(now()) @db.Timestamptz()
+  updated_at            DateTime      @updatedAt @db.Timestamptz()
+  KelasJadwal           KelasJadwal[]
+}
+
+model KelasJadwal {
+  id                    String                  @id @default(uuid())
+  kelas_id              String
+  kelas                 Kelas                   @relation(fields: [kelas_id], references: [id])
+  jadwal_id             String
+  jadwal                Jadwal                  @relation(fields: [jadwal_id], references: [id])
+  ruangan_id            String
+  ruangan               Ruangan                 @relation(fields: [ruangan_id], references: [id])
+  created_at            DateTime                @default(now()) @db.Timestamptz()
+  updated_at            DateTime                @updatedAt @db.Timestamptz()
+  MataKuliahKelasJadwal MataKuliahKelasJadwal[]
+}
+
+model Absensi {
+  id                         String                @id @default(uuid())
+  jam_masuk                  DateTime?             @db.Timestamptz()
+  batas_jam_masuk            DateTime?             @db.Timestamptz()
+  matakuliah_kelas_jadwal_id String
+  matakuliah_kelas_jadwal    MataKuliahKelasJadwal @relation(fields: [matakuliah_kelas_jadwal_id], references: [id])
+  status_absensi             StatusAbsensi         @default(DEFAULT)
+  pertemuan_ke               Int
+  created_at                 DateTime              @default(now()) @db.Timestamptz()
+  updated_at                 DateTime              @updatedAt @db.Timestamptz()
+  AbsensiMahasiswa           AbsensiMahasiswa[]
+  QrCodeWindow               QrCodeWindow[]
+}
+
+enum StatusAbsensi {
+  DEFAULT
   BUKA
   TUTUP
+}
+
+model AbsensiMahasiswa {
+  id                       String                 @id @default(uuid())
+  qr_code_text             String                 @unique
+  absensi_id               String
+  absensi                  Absensi                @relation(fields: [absensi_id], references: [id])
+  mahasiswa_id             String
+  mahasiswa                Mahasiswa              @relation(fields: [mahasiswa_id], references: [id])
+  status_absensi_mahasiswa StatusAbsensiMahasiswa @default(DEFAULT)
+  created_at               DateTime               @default(now()) @db.Timestamptz()
+  updated_at               DateTime               @updatedAt @db.Timestamptz()
+}
+
+enum StatusAbsensiMahasiswa {
+  HADIR
+  IZIN
+  ALPA
+  TELAT
+  DEFAULT
+}
+
+model MataKuliah {
+  id              String   @id @default(uuid())
+  kode_matakuliah String   @unique
+  nama_matakuliah String
+  sks             Int
+  dosen_id        String?
+  dosen           Dosen?   @relation(fields: [dosen_id], references: [id])
+  semester_id     String
+  semester        Semester @relation(fields: [semester_id], references: [id])
+  jurusan_id      String
+  jurusan         Jurusan  @relation(fields: [jurusan_id], references: [id])
+
+  created_at            DateTime                @default(now()) @db.Timestamptz()
+  updated_at            DateTime                @updatedAt @db.Timestamptz()
+  MataKuliahKelasJadwal MataKuliahKelasJadwal[]
 }
