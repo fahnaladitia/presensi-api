@@ -71,15 +71,6 @@ model Jurusan {
   MataKuliah   MataKuliah[]
 }
 
-model QrCodeWindow {
-  id           String   @id @default(uuid())
-  qr_code_text String
-  absensi_id   String   @unique
-  absensi      Absensi  @relation(fields: [absensi_id], references: [id])
-  created_at   DateTime @default(now()) @db.Timestamptz()
-  updated_at   DateTime @updatedAt @db.Timestamptz()
-}
-
 model Ruangan {
   id           String        @id @default(uuid())
   nama_ruangan String        @unique
@@ -147,10 +138,10 @@ model Absensi {
   matakuliah_kelas_jadwal    MataKuliahKelasJadwal @relation(fields: [matakuliah_kelas_jadwal_id], references: [id])
   status_absensi             StatusAbsensi         @default(DEFAULT)
   pertemuan_ke               Int
+  qr_code_text               String                @unique @default(uuid())
   created_at                 DateTime              @default(now()) @db.Timestamptz()
   updated_at                 DateTime              @updatedAt @db.Timestamptz()
   AbsensiMahasiswa           AbsensiMahasiswa[]
-  QrCodeWindow               QrCodeWindow[]
 }
 
 enum StatusAbsensi {
