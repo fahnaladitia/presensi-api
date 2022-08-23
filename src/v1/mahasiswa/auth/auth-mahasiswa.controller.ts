@@ -47,6 +47,7 @@ export class AuthMahasiswaController {
 
     const accessToken = await this.authService.signToken(data);
 
+    response.data = data;
     response.access_token = accessToken;
 
     return response;
