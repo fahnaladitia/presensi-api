@@ -6,6 +6,7 @@ import * as argon from 'argon2';
 import {
   AccountIsInactiveException,
   AccountNotFoundException,
+  EmailAlreadyExistsException,
   NewPasswordAndConfirmPasswordNotMatchException,
   PasswordAndNewPasswordAlreadySameException,
   WrongPasswordException,
@@ -44,6 +45,10 @@ export class AuthAdminService {
   }
 
   async signup(dto: AuthSignupDto) {
+    const already = await this.adminRepository.findOneAdminByEmail(dto.email);
+
+    if (already) throw new EmailAlreadyExistsException();
+
     const admin = await this.adminRepository.createAdmin(dto.email);
 
     return exclude(admin, 'password', 'created_at', 'updated_at');
