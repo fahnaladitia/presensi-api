@@ -1,4 +1,6 @@
+import { ConfigService } from '@nestjs/config';
 import { PrismaClient } from '@prisma/client';
+import * as argon from 'argon2';
 const prisma = new PrismaClient();
 async function main() {
   await prisma.semester.createMany({
@@ -29,6 +31,18 @@ async function main() {
       },
     ],
     skipDuplicates: true,
+  });
+
+  const data = new ConfigService();
+
+  const hash = await argon.hash(data.get<string>('PASSWORD_ADMIN'));
+
+  await prisma.admin.create({
+    data: {
+      email: 'root@admin.com',
+      is_active: true,
+      password: hash,
+    },
   });
 }
 

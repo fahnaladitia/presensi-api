@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
-import { AuthChangePasswordDto, AuthLoginDto } from './dto';
+import { AuthLoginDto } from './dto';
 import { exclude } from 'src/v1/utils/data-manipulation';
 import { MahasiswaRepository } from '../repository/mahasiswa.repository';
 import {
@@ -14,6 +14,7 @@ import {
   WrongPasswordException,
 } from 'src/v1/exception';
 import { Mahasiswa } from '@prisma/client';
+import { AuthChangePasswordDto } from 'src/v1/global-dto';
 
 @Injectable()
 export class AuthMahasiswaService {

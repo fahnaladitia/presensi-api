@@ -8,11 +8,11 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Mahasiswa } from '@prisma/client';
-import { AuthResponseDto } from 'src/v1/global-dto';
+import { AuthResponseDto, AuthChangePasswordDto } from 'src/v1/global-dto';
 import { MahasiswaRoutes } from 'src/v1/routes';
 import { AuthMahasiswaService } from './auth-mahasiswa.service';
 import { GetMahasiswa } from './decorator';
-import { AuthChangePasswordDto, AuthLoginDto } from './dto';
+import { AuthLoginDto } from './dto';
 import { JwtMahasiswaGuard } from './guard';
 
 @Controller(MahasiswaRoutes.AUTH_CONTROLLER)

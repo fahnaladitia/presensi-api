@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { AccountNotFoundException } from 'src/v1/exception';
 import { exclude, JwtNameStrategy } from 'src/v1/utils';
 import { MahasiswaRepository } from '../../repository/mahasiswa.repository';
 
@@ -16,7 +17,6 @@ export class JwtMahasiswaStrategy extends PassportStrategy(
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
       secretOrKey: config.get('JWT_SECRET'),
     });
   }
@@ -37,6 +37,7 @@ export class JwtMahasiswaStrategy extends PassportStrategy(
         },
       },
     );
+    if (!mahasiswa) throw new AccountNotFoundException();
     return exclude(
       mahasiswa,
       'angkatan_id',

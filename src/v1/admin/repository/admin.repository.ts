@@ -6,6 +6,15 @@ import { PrismaService } from 'src/v1/prisma/prisma.service';
 export class AdminRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findOneAdminById(id: string) {
+    const admin = await this.prisma.admin.findFirst({
+      where: {
+        id,
+      },
+    });
+    return admin;
+  }
+
   async findOneAdminByEmail(email: string) {
     const admin = await this.prisma.admin.findFirst({
       where: {
@@ -27,6 +36,18 @@ export class AdminRepository {
       },
     });
 
+    return admin;
+  }
+
+  async updatePasswordAdmin(id: string, newPassword: string) {
+    const admin = await this.prisma.admin.update({
+      where: {
+        id,
+      },
+      data: {
+        password: newPassword,
+      },
+    });
     return admin;
   }
 }
