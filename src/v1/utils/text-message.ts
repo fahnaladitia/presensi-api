@@ -6,4 +6,5 @@ export enum TextMessage {
   PASSWORD_AND_NEW_PASSWORD_ALREADY_SAME_MESSAGE = 'Your current password and new password already same, please try again',
   WRONG_IMEI_MESSAGE = 'Your imei is invalid, make sure your imei is registered with this account',
   ACCOUNT_IS_INACTIVE_MESSAGE = 'Account is inactive, please contact admin.',
+  EMAIL_ALREADY_EXISTS_MESSAGE = 'Email is already exists. please try with another email',
 }

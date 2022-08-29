@@ -6,7 +6,7 @@ import helmet from 'helmet';
 import { ValidationPipe } from './v1/pipe';
 
 async function bootstrap() {
-  const logger = new Logger();
+  const logger = new Logger(AppModule.name);
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
   const PORT = config.get('PORT');

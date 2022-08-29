@@ -6,3 +6,4 @@ export * from './account-is-inactive.exception';
 export * from './new-password-and-confirm-password-not-match.exception';
 export * from './password-and-new-password-already-same.exception';
 export * from './validation-error.exception';
+export * from './email-already-exists.exception';
