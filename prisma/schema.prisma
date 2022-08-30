@@ -52,6 +52,7 @@ model Admin {
 model Dosen {
   id         String       @id @default(uuid())
   email      String       @unique
+  nip        String       @unique
   password   String       @default("password")
   alamat     String?
   ttl        DateTime     @default(now()) @db.Timestamptz()
