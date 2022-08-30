@@ -19,6 +19,7 @@ import {
   AuthAdminSignupDto,
   AuthChangePasswordDto,
 } from '../../dto';
+import { AdminModel } from 'src/database/model';
 
 @Injectable()
 export class AuthAdminService {
@@ -39,12 +40,16 @@ export class AuthAdminService {
 
     if (!admin.is_active) throw new AccountIsInactiveException();
 
-    const adminAfterDataManipulated = exclude(
-      admin,
-      'password',
-      'created_at',
-      'updated_at',
-    );
+    const model: AdminModel = {
+      id: admin.id,
+      email: admin.email,
+      alamat: admin.alamat,
+      no_hp: admin.no_hp,
+      password: admin.password,
+      is_active: admin.is_active,
+    };
+
+    const adminAfterDataManipulated = exclude(model, 'password');
     return adminAfterDataManipulated;
   }
 

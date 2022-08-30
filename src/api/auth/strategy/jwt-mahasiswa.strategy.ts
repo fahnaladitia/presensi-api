@@ -19,18 +19,7 @@ export class JwtMahasiswaStrategy extends PassportStrategy(
   }
 
   async validate(payload: { id: string }) {
-    const mahasiswa = await this.repository.findOneById(payload.id, {
-      angkatan: {
-        select: {
-          angkatan: true,
-        },
-      },
-      jurusan: {
-        select: {
-          nama_jurusan: true,
-        },
-      },
-    });
+    const mahasiswa = await this.repository.findOneById(payload.id);
     if (!mahasiswa) throw new AccountNotFoundException();
     return exclude(
       mahasiswa,

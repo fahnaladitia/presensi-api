@@ -4,7 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
 import { AuthChangePasswordDto, AuthMahasiswaLoginDto } from '../../dto';
 import { exclude } from 'src/common/utils/data-manipulation';
-
+import * as moment from 'moment';
 import {
   AccountIsInactiveException,
   AccountNotFoundException,
@@ -13,9 +13,9 @@ import {
   WrongImeiException,
   WrongPasswordException,
 } from 'src/common/exception';
-import { Mahasiswa } from '@prisma/client';
-
+import { MahasiswaModel } from 'src/database/model';
 import { MahasiswaRepository } from 'src/database/repository';
+import { Mahasiswa } from '@prisma/client';
 
 @Injectable()
 export class AuthMahasiswaService {
@@ -28,30 +28,8 @@ export class AuthMahasiswaService {
   async login(dto: AuthMahasiswaLoginDto) {
     // cari mahasiswa dengan email atau nim
     const mahasiswa = !dto.email
-      ? await this.repository.findOneByNIM(dto.nim, {
-          angkatan: {
-            select: {
-              angkatan: true,
-            },
-          },
-          jurusan: {
-            select: {
-              nama_jurusan: true,
-            },
-          },
-        })
-      : await this.repository.findOneByEmail(dto.email, {
-          angkatan: {
-            select: {
-              angkatan: true,
-            },
-          },
-          jurusan: {
-            select: {
-              nama_jurusan: true,
-            },
-          },
-        });
+      ? await this.repository.findOneByNIM(dto.nim)
+      : await this.repository.findOneByEmail(dto.email);
 
     // cek jika tidak ada mahasiswa throw  AccountNotFoundException
     if (!mahasiswa) throw new AccountNotFoundException();
@@ -70,18 +48,22 @@ export class AuthMahasiswaService {
     // jika data mahasiswa is_active = false throw AccountIsInactiveException
     if (!mahasiswa.is_active) throw new AccountIsInactiveException();
 
-    // delete semua field yang tidak dibutuhkan dengan fungsi exclude
-    const mahasiswaAfterDataManipulated = exclude(
-      mahasiswa,
-      'password',
-      'angkatan_id',
-      'jurusan_id',
-      'created_at',
-      'updated_at',
-    );
+    const model: MahasiswaModel = {
+      id: mahasiswa.id,
+      email: mahasiswa.email,
+      nim: mahasiswa.nim,
+      nama: mahasiswa.nama,
+      ttl: moment(mahasiswa.ttl).format('DD-MM-YYYY'),
+      password: mahasiswa.password,
+      alamat: mahasiswa.alamat,
+      no_hp: mahasiswa.no_hp,
+      is_active: mahasiswa.is_active,
+      angkatan: mahasiswa.angkatan.angkatan,
+      jurusan: mahasiswa.jurusan.nama_jurusan,
+      imei: mahasiswa.imei,
+    };
 
-    // return response data
-    return mahasiswaAfterDataManipulated;
+    return exclude(model, 'password');
   }
 
   async signToken(data: any) {
@@ -130,16 +112,22 @@ export class AuthMahasiswaService {
     // selanjutnya mengubah passwordnya dengan hash yang telah dibuat
     const result = await this.repository.updatePassword(mahasiswa.id, hash);
 
-    // delete semua field yang tidak dibutuhkan dengan fungsi exclude
-    const mahasiswaAfterDataManipulated = exclude(
-      result,
-      'password',
-      'angkatan_id',
-      'jurusan_id',
-      'created_at',
-      'updated_at',
-    );
-    return mahasiswaAfterDataManipulated;
+    const model: MahasiswaModel = {
+      id: result.id,
+      email: result.email,
+      nim: result.nim,
+      nama: result.nama,
+      ttl: moment(result.ttl).format('DD-MMM-YYYY'),
+      password: result.password,
+      alamat: result.alamat,
+      no_hp: result.no_hp,
+      is_active: result.is_active,
+      angkatan: result.angkatan.angkatan,
+      jurusan: result.jurusan.nama_jurusan,
+      imei: result.imei,
+    };
+
+    return exclude(model, 'password');
   }
 
   async verifyPassword(

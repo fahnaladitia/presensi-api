@@ -1,37 +1,69 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Injectable()
 export class MahasiswaRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findOneById(id: string, include: Prisma.MahasiswaInclude = null) {
+  async findOneById(id: string) {
     const mahasiswa = await this.prisma.mahasiswa.findFirst({
       where: {
         id,
       },
-      include,
+      include: {
+        angkatan: {
+          select: {
+            angkatan: true,
+          },
+        },
+        jurusan: {
+          select: {
+            nama_jurusan: true,
+          },
+        },
+      },
     });
     return mahasiswa;
   }
 
-  async findOneByEmail(email: string, include: Prisma.MahasiswaInclude = null) {
+  async findOneByEmail(email: string) {
     const mahasiswa = await this.prisma.mahasiswa.findFirst({
       where: {
         email,
       },
-      include,
+      include: {
+        angkatan: {
+          select: {
+            angkatan: true,
+          },
+        },
+        jurusan: {
+          select: {
+            nama_jurusan: true,
+          },
+        },
+      },
     });
     return mahasiswa;
   }
 
-  async findOneByNIM(nim: string, include: Prisma.MahasiswaInclude = null) {
+  async findOneByNIM(nim: string) {
     const mahasiswa = await this.prisma.mahasiswa.findFirst({
       where: {
         nim,
       },
-      include,
+      include: {
+        angkatan: {
+          select: {
+            angkatan: true,
+          },
+        },
+        jurusan: {
+          select: {
+            nama_jurusan: true,
+          },
+        },
+      },
     });
     return mahasiswa;
   }
@@ -43,6 +75,18 @@ export class MahasiswaRepository {
       },
       data: {
         password: newPassword,
+      },
+      include: {
+        angkatan: {
+          select: {
+            angkatan: true,
+          },
+        },
+        jurusan: {
+          select: {
+            nama_jurusan: true,
+          },
+        },
       },
     });
     return mahasiswa;

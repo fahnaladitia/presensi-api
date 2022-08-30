@@ -7,6 +7,7 @@ import { LogsMiddleware } from './common/middleware';
 
 import { PrismaModule } from './database/prisma/prisma.module';
 import { AuthDosenModule } from './api/auth/user/dosen/auth-dosen.module';
+import { JurusanModule } from './api/jurusan/jurusan.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthDosenModule } from './api/auth/user/dosen/auth-dosen.module';
     AuthMahasiswaModule,
     AuthDosenModule,
     AuthAdminModule,
+    JurusanModule,
   ],
 })
 export class AppModule {
