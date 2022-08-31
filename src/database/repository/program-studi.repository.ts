@@ -174,6 +174,10 @@ export class ProgramStudiRepository {
     newName: string,
   ): Promise<ProgramStudiModel> {
     await this.getOneById(id);
+    const isExistByName = await this.prisma.programStudi.findFirst({
+      where: { nama_prodi: newName.toUpperCase() },
+    });
+    if (isExistByName) throw new ProgramStudiAlreadyExistsException();
     const programStudi = await this.prisma.programStudi.update({
       where: { id },
       data: {
