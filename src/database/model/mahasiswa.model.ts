@@ -5,10 +5,10 @@ export interface MahasiswaModel {
   nama: string;
   ttl: string;
   password: string;
-  alamat: string;
-  no_hp: string;
+  alamat: string | null;
+  no_hp: string | null;
   is_active: boolean;
-  angkatan: number;
-  jurusan: string;
+  angkatan: number | null;
+  program_studi: string | null;
   imei: string;
 }

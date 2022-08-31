@@ -7,4 +7,5 @@ export * from './new-password-and-confirm-password-not-match.exception';
 export * from './password-and-new-password-already-same.exception';
 export * from './validation-error.exception';
 export * from './email-already-exists.exception';
-export * from './jurusan-not-found.exception';
+export * from './program-studi-not-found.exception';
+export * from './program-studi-already-exists.exception';

@@ -1,6 +1,6 @@
 export enum AdminRoutes {
   AUTH_CONTROLLER = '/admin/auth',
-  JURUSAN_CONTROLLER = '/admin/jurusan',
+  PROGRAM_STUDI_CONTROLLER = '/admin/program-studi',
   CREATE = '/create',
   ID = '/:id',
   LOGIN = '/login',

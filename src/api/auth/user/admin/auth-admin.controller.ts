@@ -7,8 +7,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { Admin } from '@prisma/client';
-
 import { AdminRoutes } from 'src/api/routes';
 import { AuthAdminService } from './auth-admin.service';
 import {
@@ -20,6 +18,7 @@ import {
 import { JwtAdminGuard } from '../../guard';
 import { GetAdmin } from '../../decorator';
 import { SuccessDto } from 'src/common/global-dto';
+import { AdminModel } from 'src/database/model';
 
 @Controller(AdminRoutes.AUTH_CONTROLLER)
 export class AuthAdminController {
@@ -55,7 +54,7 @@ export class AuthAdminController {
   @Patch(AdminRoutes.CHANGE_PASSWORD)
   @HttpCode(HttpStatus.ACCEPTED)
   async changePassword(
-    @GetAdmin() admin: Admin,
+    @GetAdmin() admin: AdminModel,
     @Body() dto: AuthChangePasswordDto,
   ) {
     const response = new AuthResponseDto();

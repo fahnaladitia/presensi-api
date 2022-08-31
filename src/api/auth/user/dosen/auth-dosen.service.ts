@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import {
   AccountIsInactiveException,
-  AccountNotFoundException,
   NewPasswordAndConfirmPasswordNotMatchException,
   PasswordAndNewPasswordAlreadySameException,
   WrongPasswordException,
@@ -12,7 +11,7 @@ import { DosenRepository } from 'src/database/repository';
 import { AuthChangePasswordDto, AuthDosenLoginDto } from '../../dto';
 import * as argon from 'argon2';
 import { exclude } from 'src/common/utils';
-import { Dosen } from '@prisma/client';
+import { DosenModel } from 'src/database/model';
 
 @Injectable()
 export class AuthDosenService {
@@ -27,21 +26,13 @@ export class AuthDosenService {
       ? await this.repository.findOneByEmail(dto.nip)
       : await this.repository.findOneByNIP(dto.nip);
 
-    if (!dosen) throw new AccountNotFoundException();
-
     const pwMatches = await this.verifyPassword(dosen.password, dto.password);
 
     if (!pwMatches) throw new WrongPasswordException();
 
     if (!dosen.is_active) throw new AccountIsInactiveException();
 
-    const dosenAfterDataManipulated = exclude(
-      dosen,
-      'password',
-      'created_at',
-      'updated_at',
-    );
-    return dosenAfterDataManipulated;
+    return exclude(dosen, 'password');
   }
 
   async signToken(data: any) {
@@ -54,7 +45,7 @@ export class AuthDosenService {
     return accessToken;
   }
 
-  async changePassword(dosen: Dosen, dto: AuthChangePasswordDto) {
+  async changePassword(dosen: DosenModel, dto: AuthChangePasswordDto) {
     if (!dosen.is_active) throw new AccountIsInactiveException();
 
     const confirmPasswordMatch = dto.new_password === dto.confirm_password;
@@ -79,13 +70,7 @@ export class AuthDosenService {
 
     const result = await this.repository.updatePassword(dosen.id, hash);
 
-    const dosenAfterDataManipulated = exclude(
-      result,
-      'password',
-      'created_at',
-      'updated_at',
-    );
-    return dosenAfterDataManipulated;
+    return exclude(result, 'password');
   }
 
   async verifyPassword(

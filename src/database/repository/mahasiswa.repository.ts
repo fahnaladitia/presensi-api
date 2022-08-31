@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { AccountNotFoundException } from 'src/common/exception';
+import { mahasiswaPrismaToModel } from 'src/common/mapper';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Injectable()
@@ -7,88 +9,83 @@ export class MahasiswaRepository {
 
   async findOneById(id: string) {
     const mahasiswa = await this.prisma.mahasiswa.findFirst({
-      where: {
-        id,
-      },
+      where: { id },
       include: {
         angkatan: {
           select: {
             angkatan: true,
           },
         },
-        jurusan: {
+        program_studi: {
           select: {
-            nama_jurusan: true,
+            nama_prodi: true,
           },
         },
       },
     });
-    return mahasiswa;
+    if (!mahasiswa) throw new AccountNotFoundException();
+    return mahasiswaPrismaToModel(mahasiswa);
   }
 
   async findOneByEmail(email: string) {
     const mahasiswa = await this.prisma.mahasiswa.findFirst({
-      where: {
-        email,
-      },
+      where: { email },
       include: {
         angkatan: {
           select: {
             angkatan: true,
           },
         },
-        jurusan: {
+        program_studi: {
           select: {
-            nama_jurusan: true,
+            nama_prodi: true,
           },
         },
       },
     });
-    return mahasiswa;
+    if (!mahasiswa) throw new AccountNotFoundException();
+    return mahasiswaPrismaToModel(mahasiswa);
   }
 
   async findOneByNIM(nim: string) {
     const mahasiswa = await this.prisma.mahasiswa.findFirst({
-      where: {
-        nim,
-      },
+      where: { nim },
       include: {
         angkatan: {
           select: {
             angkatan: true,
           },
         },
-        jurusan: {
+        program_studi: {
           select: {
-            nama_jurusan: true,
+            nama_prodi: true,
           },
         },
       },
     });
-    return mahasiswa;
+    if (!mahasiswa) throw new AccountNotFoundException();
+    return mahasiswaPrismaToModel(mahasiswa);
   }
 
-  async updatePassword(id: string, newPassword: string) {
+  async updatePassword(id: string, password: string) {
+    await this.findOneById(id);
     const mahasiswa = await this.prisma.mahasiswa.update({
-      where: {
-        id: id,
-      },
-      data: {
-        password: newPassword,
-      },
+      where: { id },
+      data: { password },
       include: {
         angkatan: {
           select: {
             angkatan: true,
           },
         },
-        jurusan: {
+        program_studi: {
           select: {
-            nama_jurusan: true,
+            nama_prodi: true,
           },
         },
       },
     });
-    return mahasiswa;
+
+    return mahasiswaPrismaToModel(mahasiswa);
   }
 }

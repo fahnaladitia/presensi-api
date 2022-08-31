@@ -7,5 +7,6 @@ export enum TextMessage {
   WRONG_IMEI_MESSAGE = 'Your imei is invalid, make sure your imei is registered with this account',
   ACCOUNT_IS_INACTIVE_MESSAGE = 'Account is inactive, please contact admin.',
   EMAIL_ALREADY_EXISTS_MESSAGE = 'Email is already exists. please try with another email',
-  JURUSAN_NOT_FOUND_MESSAGE = 'Id Jurusan is invalid',
+  PROGRAM_STUDI_NOT_FOUND_MESSAGE = 'Id Program Studi is invalid',
+  PROGRAM_STUDI_ALREADY_AXISTS_MESSAGE = 'name prodi is already exists. please try with another name',
 }

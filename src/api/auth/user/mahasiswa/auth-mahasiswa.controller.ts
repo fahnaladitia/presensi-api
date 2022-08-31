@@ -7,7 +7,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { Mahasiswa } from '@prisma/client';
 import { MahasiswaRoutes } from 'src/api/routes';
 import { AuthMahasiswaService } from './auth-mahasiswa.service';
 import {
@@ -17,6 +16,7 @@ import {
 } from '../../dto';
 import { JwtMahasiswaGuard } from '../../guard';
 import { GetMahasiswa } from '../../decorator';
+import { MahasiswaModel } from 'src/database/model';
 
 @Controller(MahasiswaRoutes.AUTH_CONTROLLER)
 export class AuthMahasiswaController {
@@ -41,7 +41,7 @@ export class AuthMahasiswaController {
   @Patch(MahasiswaRoutes.CHANGE_PASSWORD)
   @HttpCode(HttpStatus.ACCEPTED)
   async changePasswordMahasiswa(
-    @GetMahasiswa() mahasiswa: Mahasiswa,
+    @GetMahasiswa() mahasiswa: MahasiswaModel,
     @Body() dto: AuthChangePasswordDto,
   ) {
     const response = new AuthResponseDto();

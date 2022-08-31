@@ -3,6 +3,6 @@ export interface MataKuliahModel {
   kode_matakuliah: string;
   nama_matakuliah: string;
   sks: number;
-  jurusan: string;
-  semester: string;
+  program_studi: string | null;
+  semester: string | null;
 }

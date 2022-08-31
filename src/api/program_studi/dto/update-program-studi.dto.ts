@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateJurusanDto {
+export class UpdateProgramStudiDto {
   @IsString()
   @IsNotEmpty()
   nama: string;

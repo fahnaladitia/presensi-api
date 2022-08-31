@@ -1,8 +1,10 @@
-export interface AdminModel {
+export interface DosenModel {
   id: string;
   email: string;
-  alamat: string | null;
-  no_hp: string | null;
+  nip: string;
   password: string;
+  alamat: string | null;
+  ttl: string | null;
+  no_hp: string | null;
   is_active: boolean;
 }

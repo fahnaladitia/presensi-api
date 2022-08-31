@@ -1,46 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { Dosen } from '@prisma/client';
+import { AccountNotFoundException } from 'src/common/exception';
+import { dosenPrismaToModel } from 'src/common/mapper';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { DosenModel } from '../model';
 
 @Injectable()
 export class DosenRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findOneById(id: string) {
+  async findOneById(id: string): Promise<DosenModel> {
     const dosen = await this.prisma.dosen.findFirst({
-      where: {
-        id,
-      },
+      where: { id },
     });
-    return dosen;
+    if (!dosen) throw new AccountNotFoundException();
+    return dosenPrismaToModel(dosen);
   }
 
-  async findOneByEmail(email: string) {
+  async findOneByEmail(email: string): Promise<DosenModel> {
     const dosen = await this.prisma.dosen.findFirst({
-      where: {
-        email,
-      },
+      where: { email },
     });
-    return dosen;
+    if (!dosen) throw new AccountNotFoundException();
+    return dosenPrismaToModel(dosen);
   }
-  async findOneByNIP(nip: string) {
+
+  async findOneByNIP(nip: string): Promise<DosenModel> {
     const dosen: Dosen = await this.prisma.dosen.findFirst({
-      where: {
-        nip,
-      },
+      where: { nip },
     });
-    return dosen;
+    if (!dosen) throw new AccountNotFoundException();
+    return dosenPrismaToModel(dosen);
   }
 
-  async updatePassword(id: string, newPassword: string) {
-    const mahasiswa = await this.prisma.mahasiswa.update({
-      where: {
-        id: id,
-      },
-      data: {
-        password: newPassword,
-      },
+  async updatePassword(id: string, password: string): Promise<DosenModel> {
+    await this.findOneById(id);
+    const dosen = await this.prisma.dosen.update({
+      where: { id },
+      data: { password },
     });
-    return mahasiswa;
+    if (!dosen) throw new AccountNotFoundException();
+    return dosenPrismaToModel(dosen);
   }
 }

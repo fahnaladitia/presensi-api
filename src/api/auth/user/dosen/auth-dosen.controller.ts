@@ -7,8 +7,8 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { Dosen } from '@prisma/client';
 import { DosenRoutes } from 'src/api/routes';
+import { DosenModel } from 'src/database/model';
 import { GetAdmin } from '../../decorator';
 import {
   AuthChangePasswordDto,
@@ -41,7 +41,7 @@ export class AuthDosenController {
   @Patch(DosenRoutes.CHANGE_PASSWORD)
   @HttpCode(HttpStatus.ACCEPTED)
   async changePassword(
-    @GetAdmin() dosen: Dosen,
+    @GetAdmin() dosen: DosenModel,
     @Body() dto: AuthChangePasswordDto,
   ) {
     const response = new AuthResponseDto();

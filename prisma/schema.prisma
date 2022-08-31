@@ -22,8 +22,8 @@ model Mahasiswa {
   is_active        Boolean            @default(false)
   angkatan_id      String
   angkatan         Angkatan           @relation(fields: [angkatan_id], references: [id])
-  jurusan_id       String
-  jurusan          Jurusan            @relation(fields: [jurusan_id], references: [id])
+  program_studi_id String?
+  program_studi    ProgramStudi?      @relation(fields: [program_studi_id], references: [id], onDelete: SetNull)
   imei             String             @unique
   created_at       DateTime           @default(now()) @db.Timestamptz()
   updated_at       DateTime           @updatedAt @db.Timestamptz()
@@ -63,13 +63,13 @@ model Dosen {
   MataKuliah MataKuliah[]
 }
 
-model Jurusan {
-  id           String       @id @default(uuid())
-  nama_jurusan String       @unique
-  created_at   DateTime     @default(now()) @db.Timestamptz()
-  updated_at   DateTime     @updatedAt @db.Timestamptz()
-  Mahasiswa    Mahasiswa[]
-  MataKuliah   MataKuliah[]
+model ProgramStudi {
+  id         String       @id @default(uuid())
+  nama_prodi String       @unique
+  created_at DateTime     @default(now()) @db.Timestamptz()
+  updated_at DateTime     @updatedAt @db.Timestamptz()
+  Mahasiswa  Mahasiswa[]
+  MataKuliah MataKuliah[]
 }
 
 model Ruangan {
@@ -172,16 +172,16 @@ enum StatusAbsensiMahasiswa {
 }
 
 model MataKuliah {
-  id              String   @id @default(uuid())
-  kode_matakuliah String   @unique
-  nama_matakuliah String
-  sks             Int
-  dosen_id        String?
-  dosen           Dosen?   @relation(fields: [dosen_id], references: [id])
-  semester_id     String
-  semester        Semester @relation(fields: [semester_id], references: [id])
-  jurusan_id      String
-  jurusan         Jurusan  @relation(fields: [jurusan_id], references: [id])
+  id               String       @id @default(uuid())
+  kode_matakuliah  String       @unique
+  nama_matakuliah  String
+  sks              Int
+  dosen_id         String?
+  dosen            Dosen?       @relation(fields: [dosen_id], references: [id])
+  semester_id      String
+  semester         Semester     @relation(fields: [semester_id], references: [id])
+  program_studi_id String
+  program_studi    ProgramStudi @relation(fields: [program_studi_id], references: [id], onDelete: Cascade)
 
   created_at            DateTime                @default(now()) @db.Timestamptz()
   updated_at            DateTime                @updatedAt @db.Timestamptz()

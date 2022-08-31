@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Admin } from '@prisma/client';
 import * as argon from 'argon2';
 import {
   AccountIsInactiveException,
-  AccountNotFoundException,
-  EmailAlreadyExistsException,
   NewPasswordAndConfirmPasswordNotMatchException,
   PasswordAndNewPasswordAlreadySameException,
   WrongPasswordException,
@@ -32,35 +29,18 @@ export class AuthAdminService {
   async login(dto: AuthAdminLoginDto) {
     const admin = await this.repository.findOneByEmail(dto.email);
 
-    if (!admin) throw new AccountNotFoundException();
-
     const pwMatches = await this.verifyPassword(admin.password, dto.password);
 
     if (!pwMatches) throw new WrongPasswordException();
 
     if (!admin.is_active) throw new AccountIsInactiveException();
 
-    const model: AdminModel = {
-      id: admin.id,
-      email: admin.email,
-      alamat: admin.alamat,
-      no_hp: admin.no_hp,
-      password: admin.password,
-      is_active: admin.is_active,
-    };
-
-    const adminAfterDataManipulated = exclude(model, 'password');
-    return adminAfterDataManipulated;
+    return exclude(admin, 'password');
   }
 
   async signup(dto: AuthAdminSignupDto) {
-    const already = await this.repository.findOneByEmail(dto.email);
-
-    if (already) throw new EmailAlreadyExistsException();
-
     const admin = await this.repository.createAdmin(dto.email);
-
-    return exclude(admin, 'password', 'created_at', 'updated_at');
+    return exclude(admin, 'password');
   }
 
   async signToken(data: any) {
@@ -74,7 +54,7 @@ export class AuthAdminService {
     return accessToken;
   }
 
-  async changePassword(admin: Admin, dto: AuthChangePasswordDto) {
+  async changePassword(admin: AdminModel, dto: AuthChangePasswordDto) {
     if (!admin.is_active) throw new AccountIsInactiveException();
 
     const confirmPasswordMatch = dto.new_password === dto.confirm_password;
@@ -97,13 +77,7 @@ export class AuthAdminService {
 
     const result = await this.repository.updatePasswordAdmin(admin.id, hash);
 
-    const adminAfterDataManipulated = exclude(
-      result,
-      'password',
-      'created_at',
-      'updated_at',
-    );
-    return adminAfterDataManipulated;
+    return exclude(result, 'password');
   }
 
   async verifyPassword(

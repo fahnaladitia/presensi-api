@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AccountNotFoundException } from 'src/common/exception';
 
 import { DosenRepository } from 'src/database/repository';
-import { exclude, JwtNameStrategy } from 'src/common/utils';
+import { JwtNameStrategy } from 'src/common/utils';
+import { AccountIsInactiveException } from 'src/common/exception';
 
 @Injectable()
 export class JwtDosenStrategy extends PassportStrategy(
@@ -21,8 +21,7 @@ export class JwtDosenStrategy extends PassportStrategy(
 
   async validate(payload: { id: string }) {
     const dosen = await this.repository.findOneById(payload.id);
-
-    if (!dosen) throw new AccountNotFoundException();
-    return exclude(dosen, 'created_at', 'updated_at');
+    if (!dosen.is_active) throw new AccountIsInactiveException();
+    return dosen;
   }
 }

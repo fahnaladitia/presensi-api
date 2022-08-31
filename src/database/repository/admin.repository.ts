@@ -1,4 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import {
+  AccountNotFoundException,
+  EmailAlreadyExistsException,
+} from 'src/common/exception';
+import { adminPrismaToModel } from 'src/common/mapper';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 
 @Injectable()
@@ -7,42 +12,38 @@ export class AdminRepository {
 
   async findOneById(id: string) {
     const admin = await this.prisma.admin.findFirst({
-      where: {
-        id,
-      },
+      where: { id },
     });
-    return admin;
+    if (!admin) throw new AccountNotFoundException();
+
+    return adminPrismaToModel(admin);
   }
 
   async findOneByEmail(email: string) {
     const admin = await this.prisma.admin.findFirst({
-      where: {
-        email,
-      },
+      where: { email },
     });
-    return admin;
+    if (!admin) throw new AccountNotFoundException();
+    return adminPrismaToModel(admin);
   }
 
   async createAdmin(email: string) {
+    const isExists = await this.prisma.admin.findFirst({
+      where: { email },
+    });
+    if (isExists) throw new EmailAlreadyExistsException();
     const admin = await this.prisma.admin.create({
-      data: {
-        email,
-        is_active: true,
-      },
+      data: { email },
     });
 
-    return admin;
+    return adminPrismaToModel(admin);
   }
 
-  async updatePasswordAdmin(id: string, newPassword: string) {
+  async updatePasswordAdmin(id: string, password: string) {
     const admin = await this.prisma.admin.update({
-      where: {
-        id,
-      },
-      data: {
-        password: newPassword,
-      },
+      where: { id },
+      data: { password },
     });
-    return admin;
+    return adminPrismaToModel(admin);
   }
 }
