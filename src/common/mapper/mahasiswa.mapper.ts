@@ -1,16 +1,9 @@
-import { Mahasiswa } from '@prisma/client';
 import * as moment from 'moment';
 import { MahasiswaModel } from 'src/database/model';
+import { MahasiswaPrismaIncludeAngkatanAndProgramStudi } from 'src/database/prisma/type';
 
 export function mahasiswaPrismaToModel(
-  mahasiswa: Mahasiswa & {
-    angkatan: {
-      angkatan: number;
-    };
-    program_studi: {
-      nama_prodi: string;
-    };
-  },
+  mahasiswa: MahasiswaPrismaIncludeAngkatanAndProgramStudi,
 ): MahasiswaModel {
   return <MahasiswaModel>{
     id: mahasiswa.id,

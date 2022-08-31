@@ -5,12 +5,13 @@ import {
 } from 'src/common/exception';
 import { adminPrismaToModel } from 'src/common/mapper';
 import { PrismaService } from 'src/database/prisma/prisma.service';
+import { AdminModel } from '../model';
 
 @Injectable()
 export class AdminRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findOneById(id: string) {
+  async findOneById(id: string): Promise<AdminModel> {
     const admin = await this.prisma.admin.findFirst({
       where: { id },
     });
@@ -19,7 +20,7 @@ export class AdminRepository {
     return adminPrismaToModel(admin);
   }
 
-  async findOneByEmail(email: string) {
+  async findOneByEmail(email: string): Promise<AdminModel> {
     const admin = await this.prisma.admin.findFirst({
       where: { email },
     });
@@ -27,7 +28,7 @@ export class AdminRepository {
     return adminPrismaToModel(admin);
   }
 
-  async createAdmin(email: string) {
+  async createAdmin(email: string): Promise<AdminModel> {
     const isExists = await this.prisma.admin.findFirst({
       where: { email },
     });
@@ -39,7 +40,7 @@ export class AdminRepository {
     return adminPrismaToModel(admin);
   }
 
-  async updatePasswordAdmin(id: string, password: string) {
+  async updatePasswordAdmin(id: string, password: string): Promise<AdminModel> {
     const admin = await this.prisma.admin.update({
       where: { id },
       data: { password },
