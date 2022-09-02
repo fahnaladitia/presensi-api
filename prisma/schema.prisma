@@ -52,6 +52,7 @@ model Admin {
 model Dosen {
   id         String       @id @default(uuid())
   email      String       @unique
+  nama       String
   nip        String       @unique
   password   String       @default("password")
   alamat     String?
@@ -153,7 +154,6 @@ enum StatusAbsensi {
 
 model AbsensiMahasiswa {
   id                       String                 @id @default(uuid())
-  qr_code_text             String                 @unique
   absensi_id               String
   absensi                  Absensi                @relation(fields: [absensi_id], references: [id])
   mahasiswa_id             String
