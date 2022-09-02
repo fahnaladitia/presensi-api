@@ -10,15 +10,14 @@ import {
 import { AdminRoutes } from 'src/api/routes';
 import { AuthAdminService } from './auth-admin.service';
 import {
-  AuthAdminLoginDto,
-  AuthAdminSignupDto,
   AuthChangePasswordDto,
   AuthResponseDto,
-} from '../../dto';
-import { JwtAdminGuard } from '../../guard';
-import { GetAdmin } from '../../decorator';
-import { SuccessDto } from 'src/common/global-dto';
+  SuccessDto,
+} from 'src/common/global-dto';
 import { AdminModel } from 'src/database/model';
+import { AuthAdminLoginDto, AuthAdminSignupDto } from './dto';
+import { JwtAdminGuard } from './guard';
+import { GetAdmin } from './decorator';
 
 @Controller(AdminRoutes.AUTH_CONTROLLER)
 export class AuthAdminController {

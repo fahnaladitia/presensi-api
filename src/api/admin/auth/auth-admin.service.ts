@@ -11,12 +11,10 @@ import {
 
 import { AdminRepository } from 'src/database/repository';
 import { exclude } from 'src/common/utils';
-import {
-  AuthAdminLoginDto,
-  AuthAdminSignupDto,
-  AuthChangePasswordDto,
-} from '../../dto';
+
 import { AdminModel } from 'src/database/model';
+import { AuthAdminLoginDto, AuthAdminSignupDto } from './dto';
+import { AuthChangePasswordDto } from 'src/common/global-dto';
 
 @Injectable()
 export class AuthAdminService {

@@ -9,14 +9,11 @@ import {
 } from '@nestjs/common';
 import { MahasiswaRoutes } from 'src/api/routes';
 import { AuthMahasiswaService } from './auth-mahasiswa.service';
-import {
-  AuthChangePasswordDto,
-  AuthMahasiswaLoginDto,
-  AuthResponseDto,
-} from '../../dto';
-import { JwtMahasiswaGuard } from '../../guard';
-import { GetMahasiswa } from '../../decorator';
 import { MahasiswaModel } from 'src/database/model';
+import { AuthMahasiswaLoginDto } from './dto';
+import { AuthChangePasswordDto, AuthResponseDto } from 'src/common/global-dto';
+import { JwtMahasiswaGuard } from './guard';
+import { GetMahasiswa } from './decorator';
 
 @Controller(MahasiswaRoutes.AUTH_CONTROLLER)
 export class AuthMahasiswaController {

@@ -8,15 +8,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { DosenRoutes } from 'src/api/routes';
+import { AuthChangePasswordDto, AuthResponseDto } from 'src/common/global-dto';
 import { DosenModel } from 'src/database/model';
-import { GetAdmin } from '../../decorator';
-import {
-  AuthChangePasswordDto,
-  AuthDosenLoginDto,
-  AuthResponseDto,
-} from '../../dto';
-import { JwtDosenGuard } from '../../guard';
+
 import { AuthDosenService } from './auth-dosen.service';
+import { GetDosen } from './decorator';
+import { AuthDosenLoginDto } from './dto';
+import { JwtDosenGuard } from './guard';
 
 @Controller(DosenRoutes.AUTH_CONTROLLER)
 export class AuthDosenController {
@@ -41,7 +39,7 @@ export class AuthDosenController {
   @Patch(DosenRoutes.CHANGE_PASSWORD)
   @HttpCode(HttpStatus.ACCEPTED)
   async changePassword(
-    @GetAdmin() dosen: DosenModel,
+    @GetDosen() dosen: DosenModel,
     @Body() dto: AuthChangePasswordDto,
   ) {
     const response = new AuthResponseDto();

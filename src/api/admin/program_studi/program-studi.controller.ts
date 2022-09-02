@@ -11,8 +11,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SuccessDto } from 'src/common/global-dto';
+import { AdminRoutes } from '../../routes';
 import { JwtAdminGuard } from '../auth/guard';
-import { AdminRoutes } from '../routes';
 import { CreateProgramStudiDto, UpdateProgramStudiDto } from './dto';
 import { ProgramStudiService } from './program-studi.service';
 

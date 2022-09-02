@@ -8,10 +8,11 @@ import {
   WrongPasswordException,
 } from 'src/common/exception';
 import { DosenRepository } from 'src/database/repository';
-import { AuthChangePasswordDto, AuthDosenLoginDto } from '../../dto';
 import * as argon from 'argon2';
 import { exclude } from 'src/common/utils';
 import { DosenModel } from 'src/database/model';
+import { AuthDosenLoginDto } from './dto';
+import { AuthChangePasswordDto } from 'src/common/global-dto';
 
 @Injectable()
 export class AuthDosenService {

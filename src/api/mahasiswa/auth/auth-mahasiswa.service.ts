@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
-import { AuthChangePasswordDto, AuthMahasiswaLoginDto } from '../../dto';
 import {
   AccountIsInactiveException,
   NewPasswordAndConfirmPasswordNotMatchException,
@@ -13,6 +12,8 @@ import {
 import { MahasiswaRepository } from 'src/database/repository';
 import { MahasiswaModel } from 'src/database/model';
 import { exclude } from 'src/common/utils';
+import { AuthMahasiswaLoginDto } from './dto';
+import { AuthChangePasswordDto } from 'src/common/global-dto';
 
 @Injectable()
 export class AuthMahasiswaService {
