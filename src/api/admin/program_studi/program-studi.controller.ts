@@ -15,12 +15,11 @@ import { AdminRoutes } from '../../routes';
 import { JwtAdminGuard } from '../auth/guard';
 import { CreateProgramStudiDto, UpdateProgramStudiDto } from './dto';
 import { ProgramStudiService } from './program-studi.service';
-
+@UseGuards(JwtAdminGuard)
 @Controller(AdminRoutes.PROGRAM_STUDI_CONTROLLER)
 export class ProgramStudiController {
   constructor(private readonly service: ProgramStudiService) {}
 
-  @UseGuards(JwtAdminGuard)
   @Get()
   @HttpCode(HttpStatus.OK)
   async getAllProgramStudi() {
@@ -32,7 +31,6 @@ export class ProgramStudiController {
     return response;
   }
 
-  @UseGuards(JwtAdminGuard)
   @Get(AdminRoutes.ID)
   @HttpCode(HttpStatus.OK)
   async getOneProgramStudi(@Param('id') id: string) {
@@ -43,7 +41,6 @@ export class ProgramStudiController {
     return response;
   }
 
-  @UseGuards(JwtAdminGuard)
   @Post(AdminRoutes.CREATE)
   @HttpCode(HttpStatus.CREATED)
   async createProgramStudi(@Body() dto: CreateProgramStudiDto) {
@@ -54,7 +51,6 @@ export class ProgramStudiController {
     return response;
   }
 
-  @UseGuards(JwtAdminGuard)
   @Patch(AdminRoutes.ID)
   @HttpCode(HttpStatus.OK)
   async updateProgramStudi(
@@ -68,7 +64,6 @@ export class ProgramStudiController {
     return response;
   }
 
-  @UseGuards(JwtAdminGuard)
   @Delete(AdminRoutes.ID)
   @HttpCode(HttpStatus.OK)
   async deleteProgramStudi(@Param('id') id: string) {
