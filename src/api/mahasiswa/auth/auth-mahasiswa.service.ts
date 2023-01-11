@@ -6,7 +6,6 @@ import {
   AccountIsInactiveException,
   NewPasswordAndConfirmPasswordNotMatchException,
   PasswordAndNewPasswordAlreadySameException,
-  WrongImeiException,
   WrongPasswordException,
 } from 'src/common/exception';
 import { MahasiswaRepository } from 'src/database/repository';
@@ -34,8 +33,6 @@ export class AuthMahasiswaService {
     );
 
     if (!pwMatches) throw new WrongPasswordException();
-
-    if (mahasiswa.imei !== dto.imei) throw new WrongImeiException();
 
     if (!mahasiswa.is_active) throw new AccountIsInactiveException();
 

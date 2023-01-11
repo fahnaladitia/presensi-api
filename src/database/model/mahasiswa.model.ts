@@ -10,5 +10,4 @@ export interface MahasiswaModel {
   is_active: boolean;
   angkatan: number | null;
   program_studi: string | null;
-  imei: string;
 }

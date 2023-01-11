@@ -12,8 +12,4 @@ export class AuthMahasiswaLoginDto {
   @IsNotEmpty()
   @IsString()
   password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  imei: string;
 }

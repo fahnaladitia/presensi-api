@@ -24,7 +24,6 @@ model Mahasiswa {
   angkatan         Angkatan           @relation(fields: [angkatan_id], references: [id])
   program_studi_id String?
   program_studi    ProgramStudi?      @relation(fields: [program_studi_id], references: [id], onDelete: SetNull)
-  imei             String             @unique
   created_at       DateTime           @default(now()) @db.Timestamptz()
   updated_at       DateTime           @updatedAt @db.Timestamptz()
   AbsensiMahasiswa AbsensiMahasiswa[]

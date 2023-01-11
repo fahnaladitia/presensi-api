@@ -17,6 +17,5 @@ export function mahasiswaPrismaToModel(
     is_active: mahasiswa.is_active,
     angkatan: mahasiswa.angkatan.angkatan,
     program_studi: mahasiswa.program_studi.nama_prodi,
-    imei: mahasiswa.imei,
   };
 }
