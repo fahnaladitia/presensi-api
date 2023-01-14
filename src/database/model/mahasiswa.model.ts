@@ -1,7 +1,10 @@
+import { GelarAkademik } from "@prisma/client";
+
 export interface MahasiswaModel {
   id: string;
   email: string;
   nim: string;
+  nik: string;
   nama: string;
   ttl: string;
   password: string;
@@ -10,4 +13,5 @@ export interface MahasiswaModel {
   is_active: boolean;
   angkatan: number | null;
   program_studi: string | null;
+  gelar_akademik: GelarAkademik;
 }
