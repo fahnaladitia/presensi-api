@@ -11,27 +11,38 @@ datasource db {
 }
 
 model Mahasiswa {
-  id               String             @id @default(uuid())
-  email            String             @unique
-  nim              String             @unique
-  nama             String
-  ttl              DateTime           @default(now()) @db.Timestamptz()
-  password         String             @default("password")
-  alamat           String?
-  no_hp            String?
-  is_active        Boolean            @default(false)
-  angkatan_id      String
-  angkatan         Angkatan           @relation(fields: [angkatan_id], references: [id])
-  program_studi_id String?
-  program_studi    ProgramStudi?      @relation(fields: [program_studi_id], references: [id], onDelete: SetNull)
-  created_at       DateTime           @default(now()) @db.Timestamptz()
-  updated_at       DateTime           @updatedAt @db.Timestamptz()
-  AbsensiMahasiswa AbsensiMahasiswa[]
+  id                String             @id @default(uuid())
+  email             String             @unique
+  nim               String             @unique
+  nik               String
+  nama              String
+  ttl               DateTime           @default(now()) @db.Timestamptz()
+  password          String             @default("password")
+  alamat            String?
+  no_hp             String?
+  is_active         Boolean            @default(false)
+  angkatan_id       String
+  gelar_academik_id String
+  gelar_academik    GelarAkademik      @relation(fields: [gelar_academik_id], references: [id])
+  angkatan          Angkatan           @relation(fields: [angkatan_id], references: [id])
+  program_studi_id  String
+  program_studi     ProgramStudi       @relation(fields: [program_studi_id], references: [id])
+  created_at        DateTime           @default(now()) @db.Timestamptz()
+  updated_at        DateTime           @updatedAt @db.Timestamptz()
+  AbsensiMahasiswa  AbsensiMahasiswa[]
 }
 
 model Angkatan {
   id         String      @id @default(uuid())
   angkatan   Int         @unique
+  created_at DateTime    @default(now()) @db.Timestamptz()
+  updated_at DateTime    @updatedAt @db.Timestamptz()
+  Mahasiswa  Mahasiswa[]
+}
+
+model GelarAkademik {
+  id         String      @id @default(uuid())
+  nama_gelar String
   created_at DateTime    @default(now()) @db.Timestamptz()
   updated_at DateTime    @updatedAt @db.Timestamptz()
   Mahasiswa  Mahasiswa[]
