@@ -145,10 +145,10 @@ model KelasJadwal {
 model Absensi {
   id                         String                @id @default(uuid())
   jam_masuk                  DateTime?             @db.Timestamptz()
-  batas_jam_masuk            DateTime?             @db.Timestamptz()
+  jangka_waktu_absensi       Int?
   matakuliah_kelas_jadwal_id String
   matakuliah_kelas_jadwal    MataKuliahKelasJadwal @relation(fields: [matakuliah_kelas_jadwal_id], references: [id])
-  status_absensi             StatusAbsensi         @default(DEFAULT)
+  status_absensi             StatusAbsensi         @default(BELUM_BUKA)
   pertemuan_ke               Int
   qr_code_text               String                @unique @default(uuid())
   created_at                 DateTime              @default(now()) @db.Timestamptz()
@@ -157,7 +157,7 @@ model Absensi {
 }
 
 enum StatusAbsensi {
-  DEFAULT
+  BELUM_BUKA
   BUKA
   TUTUP
 }
@@ -176,8 +176,7 @@ model AbsensiMahasiswa {
 enum StatusAbsensiMahasiswa {
   HADIR
   IZIN
-  ALPA
-  TELAT
+  TIDAK_HADIR
   DEFAULT
 }
 
