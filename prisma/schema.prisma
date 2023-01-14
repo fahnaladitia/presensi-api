@@ -11,38 +11,37 @@ datasource db {
 }
 
 model Mahasiswa {
-  id                String             @id @default(uuid())
-  email             String             @unique
-  nim               String             @unique
-  nik               String
-  nama              String
-  ttl               DateTime           @default(now()) @db.Timestamptz()
-  password          String             @default("password")
-  alamat            String?
-  no_hp             String?
-  is_active         Boolean            @default(false)
-  angkatan_id       String
-  gelar_academik_id String
-  gelar_academik    GelarAkademik      @relation(fields: [gelar_academik_id], references: [id])
-  angkatan          Angkatan           @relation(fields: [angkatan_id], references: [id])
-  program_studi_id  String
-  program_studi     ProgramStudi       @relation(fields: [program_studi_id], references: [id])
-  created_at        DateTime           @default(now()) @db.Timestamptz()
-  updated_at        DateTime           @updatedAt @db.Timestamptz()
-  AbsensiMahasiswa  AbsensiMahasiswa[]
+  id               String             @id @default(uuid())
+  email            String             @unique
+  nim              String             @unique
+  nik              String
+  nama             String
+  ttl              DateTime           @default(now()) @db.Timestamptz()
+  password         String             @default("password")
+  alamat           String?
+  no_hp            String?
+  is_active        Boolean            @default(false)
+  angkatan_id      String
+  angkatan         Angkatan           @relation(fields: [angkatan_id], references: [id])
+  gelar_akademik   GelarAkademik      @default(S1)
+  program_studi_id String
+  program_studi    ProgramStudi       @relation(fields: [program_studi_id], references: [id])
+  created_at       DateTime           @default(now()) @db.Timestamptz()
+  updated_at       DateTime           @updatedAt @db.Timestamptz()
+  AbsensiMahasiswa AbsensiMahasiswa[]
+  GerbangQRCode    GerbangQRCode[]
+}
+
+enum GelarAkademik {
+  S1
+  S2
+  D3
+  D4
 }
 
 model Angkatan {
   id         String      @id @default(uuid())
   angkatan   Int         @unique
-  created_at DateTime    @default(now()) @db.Timestamptz()
-  updated_at DateTime    @updatedAt @db.Timestamptz()
-  Mahasiswa  Mahasiswa[]
-}
-
-model GelarAkademik {
-  id         String      @id @default(uuid())
-  nama_gelar String
   created_at DateTime    @default(now()) @db.Timestamptz()
   updated_at DateTime    @updatedAt @db.Timestamptz()
   Mahasiswa  Mahasiswa[]
@@ -94,9 +93,15 @@ model Ruangan {
 model Kelas {
   id          String        @id @default(uuid())
   nama_kelas  String        @unique
+  tipe_kelas  TipeKelas     @default(REGULER)
   created_at  DateTime      @default(now()) @db.Timestamptz()
   updated_at  DateTime      @updatedAt @db.Timestamptz()
   KelasJadwal KelasJadwal[]
+}
+
+enum TipeKelas {
+  REGULER
+  INTER
 }
 
 model Semester {
@@ -113,10 +118,9 @@ model MataKuliahKelasJadwal {
   kelas_jadwal    KelasJadwal @relation(fields: [kelas_jadwal_id], references: [id])
   matakuliah_id   String
   matakuliah      MataKuliah  @relation(fields: [matakuliah_id], references: [id])
-
-  created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @updatedAt @db.Timestamptz()
-  Absensi    Absensi[]
+  created_at      DateTime    @default(now()) @db.Timestamptz()
+  updated_at      DateTime    @updatedAt @db.Timestamptz()
+  Absensi         Absensi[]
 }
 
 model Jadwal {
@@ -150,10 +154,23 @@ model Absensi {
   matakuliah_kelas_jadwal    MataKuliahKelasJadwal @relation(fields: [matakuliah_kelas_jadwal_id], references: [id])
   status_absensi             StatusAbsensi         @default(BELUM_BUKA)
   pertemuan_ke               Int
-  qr_code_text               String                @unique @default(uuid())
+  gerbang_qr_code_id         String
+  gerbang_qr_code            GerbangQRCode         @relation(fields: [gerbang_qr_code_id], references: [id])
   created_at                 DateTime              @default(now()) @db.Timestamptz()
   updated_at                 DateTime              @updatedAt @db.Timestamptz()
   AbsensiMahasiswa           AbsensiMahasiswa[]
+}
+
+model GerbangQRCode {
+  id           String     @id @default(uuid())
+  qr_code_text String     @default(uuid())
+  is_used      Boolean    @default(false)
+  mahasiswa_id String?
+  mahasiswa    Mahasiswa? @relation(fields: [mahasiswa_id], references: [id])
+  jam_dipakai  DateTime?
+  created_at   DateTime   @default(now()) @db.Timestamptz()
+  updated_at   DateTime   @updatedAt @db.Timestamptz()
+  Absensi      Absensi[]
 }
 
 enum StatusAbsensi {
@@ -185,8 +202,8 @@ model MataKuliah {
   kode_matakuliah  String       @unique
   nama_matakuliah  String
   sks              Int
-  dosen_id         String?
-  dosen            Dosen?       @relation(fields: [dosen_id], references: [id])
+  dosen_id         String
+  dosen            Dosen        @relation(fields: [dosen_id], references: [id])
   semester_id      String
   semester         Semester     @relation(fields: [semester_id], references: [id])
   program_studi_id String
